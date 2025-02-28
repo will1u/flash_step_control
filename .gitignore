@@ -1,0 +1,15 @@
+# Ignore build files
+build/
+*.uf2
+*.bin
+*.hex
+
+# Ignore temporary files
+*.o
+*.obj
+*.log
+*.tmp
+
+# Ignore VS Code project files
+.vscode/
+
