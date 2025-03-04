@@ -51,6 +51,7 @@ int main() {
             printf("Enter number of repeats (empty is default as 1): ");
             scanf("%d", &repeats);
             
+            printf("All flashed! \n");
             pio_sm_put_blocking(pio, sm, 0x00000000);
             for (int i = 0; i < repeats; i++){
                 
@@ -70,7 +71,7 @@ int main() {
             printf("Enter number of repeats (empty is default as 1): ");
             scanf("%d", &repeats);
 
-            printf("All flashed! \n");
+            
 
             printf("Step flashing!\n");
 
