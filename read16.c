@@ -25,21 +25,22 @@ int main() {
 
     read16_program_init(pio, sm, offset, PIO_BASE_PIN);
     
-    uint32_t value_array[16];
-    uint32_t value = 0x00000001;
-    for (int i = 0; i < 16; i ++) {
-        value_array[i] = value;         
-        value = value * 2;
+    uint32_t value_array[8];
+    uint32_t value = 0x00020001;
+
+    for (int i = 0 ; i < 8 ; i++) {
+        value_array[i] = value;
+        value = value * 4;
     }
 
     char userInput = '\0';
     bool invalidInputDisplayed = false;
     bool waitingForCommand = true;
-    
+    bool waitingForRepeats = true;
     while (true) {
         if (waitingForCommand) {
             printf("Command (1 = flash, 0 = step): \n");
-            waitingForCommand = false; // Avoid repeated prints
+            waitingForCommand = false; 
         }
         
         userInput = getchar_timeout_us(10000);
@@ -47,51 +48,44 @@ int main() {
         if (userInput == '1') {
             invalidInputDisplayed = false;
             waitingForCommand = true;
-            printf("LED flashing at 500ms intervals!\n");
-
-            char userInput2 = '\0';
-            printf("Press 2 to stop: \n");
+            int repeats = 1;
+            printf("Enter number of repeats (empty is default as 1): ");
+            scanf("%d", &repeats);
             
-            while (userInput2 != '2') {
-                // Blink
-                pio_sm_put_blocking(pio, sm, 0x03FFFFFF);
-                sleep_ms(500);
-                // Blonk
-                pio_sm_put_blocking(pio, sm, 0x00000000);
-                sleep_ms(500);
+            pio_sm_put_blocking(pio, sm, 0x00000000);
+            for (int i = 0; i < repeats; i++){
                 
-                userInput2 = getchar_timeout_us(10000); 
+                // pio_sm_put_blocking(pio, sm, 0xFFFFFFFF);
+                pio_sm_put_blocking(pio, sm, 0x0000FFFF);
             }
             printf("Stopped flashing.\n");
+            pio_sm_put_blocking(pio, sm, 0x00000000);
+
         } 
+
         else if (userInput == '0') {
             invalidInputDisplayed = false;
             waitingForCommand = true;
-            printf("LED flashing at 100ms intervals!\n");
-            
-            char userInput2 = '\0';
-            printf("Press 2 to stop: \n");
-            
-            while (userInput2 != '2') {
-                for (int i = 0; i < 16; i ++) {
-                    uint32_t value = value_array[i];
-                    pio_sm_put_blocking(pio, sm, value);
-                    sleep_ms(100);
 
-                    userInput2 = getchar_timeout_us(10000); 
-                    if (userInput2 == '2') {
-                        break;
-                    }
-                }
-                
+            int repeats = 1;
+            printf("Enter number of repeats (empty is default as 1): ");
+            scanf("%d", &repeats);
+
+            printf("All flashed! \n");
+
+            printf("Step flashing!\n");
+
+            pio_sm_put_blocking(pio, sm, 0x00000000);
+            for (int i = 0; i < repeats; i++){
+                for (int j = 0; j < 8; j++) {
+                    uint32_t value = value_array[j];
+                    pio_sm_put_blocking(pio, sm, value);
+                    // sleep_ms(500);                
+                }        
             }
+            pio_sm_put_blocking(pio, sm, 0x00000000);
             printf("Stopped flashing.\n");
         } 
-        else if (userInput != PICO_ERROR_TIMEOUT && !invalidInputDisplayed) {
-            gpio_put(25, 0);
-            printf("Invalid input! Please enter 1 or 0.\n");
-            invalidInputDisplayed = true; 
-        }
     }
 }
 
