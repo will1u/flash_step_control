@@ -36,7 +36,6 @@ int main() {
     char userInput = '\0';
     bool invalidInputDisplayed = false;
     bool waitingForCommand = true;
-    bool waitingForRepeats = true;
     while (true) {
         if (waitingForCommand) {
             printf("Command (1 = flash, 0 = step): \n");
