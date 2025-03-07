@@ -51,7 +51,7 @@ int main() {
             printf("Enter number of repeats (empty is default as 1): ");
             scanf("%d", &repeats);
             
-            printf("All flashed! \n");
+            printf("All flashed!  \n");
             pio_sm_put_blocking(pio, sm, 0x00000000);
             for (int i = 0; i < repeats; i++){
                 
@@ -85,7 +85,22 @@ int main() {
             }
             pio_sm_put_blocking(pio, sm, 0x00000000);
             printf("Stopped flashing.\n");
-        } 
+        }
+        else if (userInput == '3') {
+            invalidInputDisplayed = false;
+            waitingForCommand = true;
+
+            printf("Turned off \n");
+            pio_sm_put_blocking(pio, sm, 0x00000000);
+        }
+
+        else if (userInput == '4') {
+            invalidInputDisplayed = false;
+            waitingForCommand = true;
+
+            printf("Turned on \n");
+            pio_sm_put_blocking(pio, sm, 0xFFFFFFFF);
+        }
     }
 }
 
